@@ -1,0 +1,67 @@
+{
+  "name": "@unicef/react-easyauth",
+  "version": "0.1.0",
+  "description": "unicef react app easy auth",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "start": "rollup -c -w",
+    "styleguide": "styleguidist server",
+    "styleguide:build": "styleguidist build",
+    "deploy": "gh-pages -d styleguide",
+    "transpile": "./node_modules/@babel/cli/bin/babel.js src/components/CurrencyTextField -d dist --copy-files",
+    "prepublishOnly": "npm run transpile",
+    "publish-demo": "npm run build && npm run deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unicef/react-easyauth.git"
+  },
+  "keywords": [
+    "unicef",
+    "easy",
+    "auth",
+    "azure",
+    "react"
+  ],
+  "author": "@unicef",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unicef/react-easyauth/issues"
+  },
+  "homepage": "https://github.com/unicef/react-easyauth#readme",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^6.23.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelrc-rollup": "^3.0.0",
+    "gh-pages": "^2.1.1",
+    "prop-types": "^15.7.2",
+    "react-styleguidist": "^10.4.2",
+    "rollup": "^1.17.0",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-commonjs": "^10.0.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
+    "rollup-plugin-url": "^2.2.2",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.2.1"
+  }
+}
