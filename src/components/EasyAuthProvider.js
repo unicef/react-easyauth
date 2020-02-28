@@ -1,6 +1,12 @@
 import React from 'react'
-const EasyAuthContext = React.createContext()
-
+import EasyAuthContext from './EasyAuthContext'
+/**
+** It performs actual token access and refresh mechanism
+ ** getToken receives the tokem from .auth/me 
+ ** refreshToken which handle the token expiry
+ ** App can also call refreshToken from its page in order to refresh the token
+ ** By default apiFetch and graphApiFetch handle the token refresh
+*/
 const EasyAuthProvider = (props) => {
     const [loginUser, setLoginUser] = React.useState({
         name: '',
@@ -73,4 +79,4 @@ const EasyAuthProvider = (props) => {
     )
 }
 
-export { EasyAuthContext, EasyAuthProvider }
+export default EasyAuthProvider 
