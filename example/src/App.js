@@ -24,14 +24,14 @@ function App() {
         setCount(json.value.length)
       })
       
-    // apiFetch(authContext, 'api/offices')
-    //   .then(function (res) {
-    //     if (res.ok)
-    //       return res.json()
-    //   })
-    //   .then(result => {
-    //     console.log(result)
-    //   })
+    apiFetch(authContext, '/api/offices')
+      .then(function (res) {
+        if (res.ok)
+          return res.json()
+      })
+      .then(result => {
+        console.log(result)
+      })
   }
     return (
     <React.Fragment>
