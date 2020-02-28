@@ -1,5 +1,5 @@
 export default function apiFetch(authContext, url, options) {
-    let apiUrl = authContext.userData.url + '/api/' + url
+    let apiUrl = authContext.userData.url + url
     let expireDate = new Date(authContext.userData.expiresOn)
     let currentDate = new Date()
   

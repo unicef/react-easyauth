@@ -49,7 +49,6 @@ export default function MyComponent() {
 }
 ```
 
-
 ## Development
 
 In order to extend the component, clone the project and install the dependencies.
@@ -57,7 +56,6 @@ In order to extend the component, clone the project and install the dependencies
 $ git clone https://github.com/unicef/react-easyauth.git
 $ npm install
 ```
-
 The following commands are available: 
 
 ### `npm start`
