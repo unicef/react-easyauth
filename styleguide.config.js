@@ -1,11 +1,18 @@
 const path = require('path')
 const { styles, theme } = require('./styleguide.styles')
 module.exports = {
-  title: "projectname",
-  showUsage: true,
+  title: "React easy auth",
+  usageMode: 'collapse',
   styles,
   theme,
   showSidebar: false,
+  getComponentPathLine: componentPath => {
+    const name = componentPath
+      .split('src\\components\\')
+      .pop()
+      .split('.js')[0]
+    return `import { ${name} } from '@unicef/react-easyauth`
+  }, 
   webpackConfig: {
     module: {
       rules: [
@@ -26,17 +33,15 @@ module.exports = {
   // styleguideComponents: {
   //   Logo: path.join(__dirname, 'src/assets/logo.png')
   // },
-  // sections: [
-  //   {
-  //     name: '',
-  //     //content: 'src/components/readme.md'
-  //   },
-  //   {
-  //     name: '',
-  //     components: () => ([
-  //       path.resolve(__dirname, 'src/components/', 'EasyAuthentication.js'),
-  //     ])
-  //   },
-  // ],
-  components: 'src/components/[A-Z]*.js', 
+  sections: [
+    {
+      name: '',
+      content: 'src/readme.md'
+    },
+    {
+      name: '',
+      components: 'src/components/[A-Z]*.js',
+    }
+  ],
+  //components: 'src/components/[A-Z]*.js', 
 };

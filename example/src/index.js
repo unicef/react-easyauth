@@ -3,8 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { EasyAuthProvider } from '@unicef/react-easyauth'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+<EasyAuthProvider url = 'https://********.azurewebsites.net' graphUrl = 'https://graph.microsoft.com'>
+<App />
+</EasyAuthProvider>
+, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

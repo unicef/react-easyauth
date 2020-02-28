@@ -2,7 +2,7 @@
   "name": "@unicef/react-easyauth",
   "version": "0.1.0",
   "description": "unicef react app easy auth",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",

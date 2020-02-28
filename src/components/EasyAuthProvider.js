@@ -1,19 +1,12 @@
 import React from 'react'
-const EasyAuthContext = React.createContext()
+import EasyAuthContext from './EasyAuthContext'
 /**
- * CurrencyTextField is a [react](https://reactjs.org/) component with automated currency and number format, and with [Material-ui](https://material-ui.com/) look and feel.
- *
- * CurrencyTextField is a wrapper component for <a href="https://github.com/autoNumeric/autoNumeric">autonumeric</a> and based on <a href="https://github.com/mkg0/react-numeric">react-numeric</a>.
- *
- * Main features:
- * * Adds thousands separator automatically.
- * * Adds automatically the decimals on blur.
- * * Smart input. User can only type the accepted characters depending on the current value.
- * * Lots of config options...
- * * It accepts all the `props` and `classes` of Material-Ui <a href="https://material-ui.com/api/text-field/#textfield-api">TextField API</a> (Ex: classes, label, helperText, variant).
- * * And also all the `options` from <a href="http://autonumeric.org/guide">AutoNumeric</a>
- */
-
+** It performs actual token access and refresh mechanism
+ ** getToken receives the tokem from .auth/me 
+ ** refreshToken which handle the token expiry
+ ** App can also call refreshToken from its page in order to refresh the token
+ ** By default apiFetch and graphApiFetch handle the token refresh
+*/
 const EasyAuthProvider = (props) => {
     const [loginUser, setLoginUser] = React.useState({
         name: '',
@@ -86,4 +79,4 @@ const EasyAuthProvider = (props) => {
     )
 }
 
-export { EasyAuthContext, EasyAuthProvider }
+export default EasyAuthProvider 

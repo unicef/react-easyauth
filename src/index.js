@@ -1,3 +1,6 @@
-import {EasyAuthContext, EasyAuthProvider} from './components/EasyAuthentication'
+import EasyAuthContext from './components/EasyAuthContext'
+import EasyAuthProvider from './components/EasyAuthProvider'
+import apiFetch from './components/apiFetch'
+import graphApiFetch from './components/graphApiFetch'
 
-export {EasyAuthContext, EasyAuthProvider}
+export {EasyAuthContext, EasyAuthProvider, apiFetch, graphApiFetch}

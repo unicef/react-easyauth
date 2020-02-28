@@ -1,48 +1,50 @@
-# Material-ui currency textfield
+# React easy auth
 
-`CurrencyTextField` is a  [Material-ui](https://material-ui.com/) [react](https://reactjs.org/) component. It provides a user friendly experience while inputing currency numbers. 
+`React easy auth` is a  [react](https://reactjs.org/) component. It provides single sign-on expereince to a react app using microsoft easy auth approach. 
 
-`CurrencyTextField` wraps the functionality of <a href="https://github.com/autoNumeric/autoNumeric">autonumeric</a> and it is a port of <a href="https://github.com/mkg0/react-numeric">react-numeric</a> in Material-ui.
-
-![Example of material](https://raw.githubusercontent.com/unicef/material-ui-currency-textfield/master/material-ui-currency-field.gif)
+`React easy auth` wraps the functionality of single sign on authentication to the react app.
 
 Main features:
- * Adds thousands separator automatically.
- * Adds automatically the decimals on blur.
- * Smart input. User can only type the accepted characters depending on the current value.
- * Lots of config options...
+ * Enabale microsoft single sign-on using easy auth approach .
+ * It can connect application api as well as graph/third party api.
+ * apiFetch helps to call application api.
+ * graphApiFetch helps to call graph/third party api
 
 ## Install
 
  ```bash
- npm install @unicef/material-ui-currency-textfield --save
+ npm install @unicef/react-easyauth --save
 ```
 
 ## Usage
 
-**[Documentation and live demo is available here](https://unicef.github.io/material-ui-currency-textfield/)**
+**[Documentation and live demo is available here](https://unicef.github.io/react-easyauth/)**
 
 
-```jsx
+```jsx static
 import React from 'react'
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import {EasyAuthContext} from '@unicef/react-easyauth'
+
+ReactDOM.render(
+<EasyAuthProvider url = 'appurl' graphUrl = 'graphUrl'>
+<App />
+</EasyAuthProvider>
+, document.getElementById('root'));
+
+
+import React from 'react'
+import {EasyAuthContext} from '@unicef/react-easyauth'
 
 export default function MyComponent() {
 
-  const [value, setValue] = React.useState();
+  const authContext = React.useContext(EasyAuthContext);
+
+  apiFetch(authContext, url)
 
   return (
-    <CurrencyTextField
-		label="Amount"
-		variant="standard"
-		value={value}
-		currencySymbol="$"
-		//minimumValue="0"
-		outputFormat="string"
-		decimalCharacter="."
-		digitGroupSeparator=","
-		onChange={(event, value)=> setValue(value)}
-    />
+	<React.Fragment>
+	
+	</React.Fragment>
   );
 }
 ```
@@ -52,7 +54,7 @@ export default function MyComponent() {
 
 In order to extend the component, clone the project and install the dependencies.
 ```bash
-$ git clone https://github.com/unicef/material-ui-currency-textfield.git
+$ git clone https://github.com/unicef/react-easyauth.git
 $ npm install
 ```
 
