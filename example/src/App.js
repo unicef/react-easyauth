@@ -11,7 +11,7 @@ function App() {
       setUserName(authContext.userData.name)
       setToken(authContext.userData.token)
     }
-  })
+  },[authContext, userName])
 
   const clickHandle = () => {
     graphApiFetch(authContext, '/v1.0/users')
@@ -24,7 +24,7 @@ function App() {
         setCount(json.value.length)
       })
       
-    apiFetch(authContext, '/api/offices')
+    apiFetch(authContext, '/api/api/offices')
       .then(function (res) {
         if (res.ok)
           return res.json()

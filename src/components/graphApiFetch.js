@@ -5,9 +5,10 @@ export default function graphApiFetch(authContext, url, options) {
   
     if (options === null || options === undefined) {
       options = {}
-      if (options.headers == null || options.headers === undefined) {
-        options.headers = {}
-      }
+    }
+
+    if (options.headers == null || options.headers === undefined) {
+      options.headers = {}
     }
   
     if (expireDate.getDate() !== currentDate.getDate() || currentDate.getTime() >= expireDate.getTime()) {
