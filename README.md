@@ -18,12 +18,11 @@ Main features:
 
 ## Usage
 
-**[Documentation and live demo is available here](https://unicef.github.io/react-easyauth/)**
-
-
 ```jsx static
+
+# App.js
 import React from 'react'
-import {EasyAuthContext} from '@unicef/react-easyauth'
+import { EasyAuthContext } from '@unicef/react-easyauth'
 
 ReactDOM.render(
 <EasyAuthProvider url = 'appurl' graphUrl = 'graphUrl'>
@@ -32,18 +31,19 @@ ReactDOM.render(
 , document.getElementById('root'));
 
 
+# In a component that requires easyAuth
+
 import React from 'react'
 import {EasyAuthContext} from '@unicef/react-easyauth'
 
 export default function MyComponent() {
 
   const authContext = React.useContext(EasyAuthContext);
-
+  
   apiFetch(authContext, url)
-
+  
   return (
 	<React.Fragment>
-	
 	</React.Fragment>
   );
 }
@@ -114,11 +114,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
-### Acknowledgements
-
-The majority of the source code of this repo was developed by [@sureshsevarthi](http://github.com/sureshsevarthi).
-
-Also, this source code is based on [react-numeric](https://github.com/mkg0/react-numeric).
 
