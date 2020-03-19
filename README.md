@@ -16,7 +16,7 @@ Main features:
 
 ## Usage
 
-```jsx
+```jsx static
 // index.js
 import { EasyAuthProvider } from "@unicef/react-easyauth"
 
@@ -68,9 +68,11 @@ A workaround is to tell your browser to skip CORS.
 ### Google Chrome Windows
 
 1. Open a command Window and run chrome with the following arguments:
+
    ```bash
    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp'
    ```
+
 2. Open the react application on the new browser.
 
 Note that creating a shortcut with that command in the target field may be pretty convenient.
@@ -112,11 +114,11 @@ In `https://resources.azure.com`
 1. On the left browser click on subscriptions -> Subcription name -> resourceGroups -> resourceGroupName -> providers -> Microsoft.Web -> sites -> <Appname> -> config -> authsettings -> Edit
 
 2. Update property `additionalLoginParams`. Replace
-   ```
+   ```json
    "additionalLoginParams": null,
    ```
    with
-   ```
+   ```json
    "additionalLoginParams": [ "response_type=code id_token", "resource=https://graph.microsoft.com" ],
    ```
 

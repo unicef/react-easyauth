@@ -36,7 +36,7 @@ module.exports = {
   sections: [
     {
       name: '',
-      content: 'src/readme.md'
+      content: 'README.md'
     },
     {
       name: '',
