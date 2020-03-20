@@ -1,10 +1,10 @@
 # React EasyAuth [![npm](https://img.shields.io/npm/v/@unicef/react-easyauth.svg?style=flat-square)](https://www.npmjs.com/package/@unicef/react-easyauth)
 
 
-React Easy Auth is a [react](https://reactjs.org/) component wrapper that provides single sign-on experience to a React application. 
+React Easy Auth is a [react](https://reactjs.org/) component wrapper that provides [Microsoft EasyAuth single sign-on experience](https://docs.microsoft.com/en-us/azure/app-service/overview-authentication-authorization) to a React application. 
 
 Main features:
- * Enabale Microsoft single sign-on using easy auth .
+ * Enable Microsoft single sign-on using easy auth for Microsoft accounts.
  * `apiFetch` function handles getting and refreshing the token when required.
  * `graphApiFetch` helps to call graph/third party api
 
@@ -114,10 +114,12 @@ In `https://resources.azure.com`
 1. On the left browser click on subscriptions -> Subcription name -> resourceGroups -> resourceGroupName -> providers -> Microsoft.Web -> sites -> <Appname> -> config -> authsettings -> Edit
 
 2. Update property `additionalLoginParams`. Replace
+   
    ```json
    "additionalLoginParams": null,
    ```
    with
+
    ```json
    "additionalLoginParams": [ "response_type=code id_token", "resource=https://graph.microsoft.com" ],
    ```
