@@ -8,7 +8,7 @@ import * as serviceWorker from './serviceWorker';
 import {AuthContext, authFetch} from '@unicef/react-easyauth'
 
 const config = {
-  apiUrl: 'https://yyy.azurewebsites.net',  
+  apiUrl: 'https://merlos.azurewebsites.net',  
   //apiUrl: 'https://xxx.azurewebsites.net',
   graphUrl: 'https://graph.microsoft.com'
 }
@@ -31,9 +31,15 @@ const path='/api/offices'
 apiFetch(path).then(res => {
   console.log('index.apiFetch res:', res)
   console.log('authContext api fetch', authContext)
-  return res.json()
-}).then(data => { 
+  if (res.ok) {  
+    return res.json()
+  } 
+  throw Error(res.statusText)   
+})
+.then(data => { 
   console.log('index.apiFetch.data:', data)
+}).catch(error =>  {
+  console.log(error)
 })
 
 
