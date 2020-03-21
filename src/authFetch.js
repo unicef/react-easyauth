@@ -14,7 +14,8 @@ export default async function authFetch(authContext, url, options = {}) {
 
   options.headers = options.headers || {}
   //if the token expired => refresh it
-  if (authContext.hasTokenExpired()) {
+  if (await authContext.hasTokenExpired()) {
+    console.log('authFetch received if token expired')
     //await authContext.refreshToken()
   }
   //Set the auth bearer
