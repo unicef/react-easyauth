@@ -126,6 +126,11 @@ In `https://resources.azure.com`
 
 3. Click Put to save the settings.
 
+
+More info in this article: [Configuring an App Service to get an Access Token for AAD Graph API](https://blogs.msdn.microsoft.com/aaddevsup/2018/02/28/configuring-an-app-service-to-get-an-access-token-for-graph-api/)
+
+Note that easy auth does not support getting access to multiple resources at one time using easy auth.
+
 ## Development
 
 In order to extend this component, clone the project and install the dependencies.
