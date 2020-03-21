@@ -41,7 +41,7 @@ const AuthContext = (url) => {
   context.getToken = async (refreshOnRedirect = true) => {
     console.log('getToken')
     context.isLoadingToken = true
-    await delay(5000)
+    //await delay(5000)
     console.log('getToken: finished delay')
     const res = await fetch(context.url + '/.auth/me')
     console.log('getToken res:', res)
