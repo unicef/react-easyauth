@@ -11,13 +11,21 @@ const AuthContext = (url) => {
     token: '', //EasyAuth token
     expiresOn: null, // Datetime when the token expires
     response: {}, //Token response
+    error: null
   }
 
   /**
    * Pauses for ms milliseconds
    * @param {Integer} ms 
    */
-  const delay = (ms = 100) => new Promise(_ => setTimeout(_, ms));
+  const wait = (ms = 50) => new Promise(_ => setTimeout(_, ms));
+  
+  context.isInitialized = async () => {
+    while (context.isLoadingToken && context.error === null) {
+      console.log("hasTokenExpired: delay context.isLoadingToken")
+      await wait()
+    }
+  }
 
   /**
    * Returns true if the token of the context has expired 
@@ -25,11 +33,9 @@ const AuthContext = (url) => {
   context.hasTokenExpired = async () => {
     // TODO: find a more 
     // It pools 
-    while (context.isLoadingToken) {
-      console.log("hasTokenExpired: delay context.isLoadingToken")
-      await delay(100)
-    }
-    if (context.expiresOn === null) return false
+    await context.isInitialized() 
+
+    if (context.expiresOn === null) return true
     let currentDate = new Date()
     console.log(`expiresOn ${context.expiresOn.toString()} \nnow: ${currentDate.toString()}` )
     return (currentDate.getTime() >= context.expiresOn.getTime()) ? true : false
@@ -41,34 +47,37 @@ const AuthContext = (url) => {
   context.getToken = async (refreshOnRedirect = true) => {
     console.log('getToken')
     context.isLoadingToken = true
-    //await delay(5000)
-    console.log('getToken: finished delay')
-    const res = await fetch(context.url + '/.auth/me')
-    console.log('getToken res:', res)
-    if (! res.ok) {
-      context.isLoadingToken = false
-      throw Error(res.error)
-    }
-    if (res.redirected) {
-      if (refreshOnRedirect) { 
-        await context.refreshToken()
-        return
-      } else { 
-       // console.log('getToken redirected true res:', res)
-        //context.isLoadingToken = false
-        // TODO create an iframe to handle auth.
-        //throw Error(`EasyAuthRedirectError: /.auth/me is redirecting the request. During development this may be because you are not already authenticated. Try signing in in ${context.url} in another tab.`)
+    //console.log('getToken: finished delay')
+    try { 
+      const res = await fetch(context.url + '/.auth/me')
+      console.log('getToken res:', res)
+      if (! res.ok) {
+        context.isLoadingToken = false
+        throw Error(res.error)
       }
-    } 
-    context.isLoadingToken = false
-    console.log('getToken, res ok')
-    const data = await res.json()
-    console.log('getToken data:', data)
-    context.userId = data[0].user_id
-    context.token = data[0].access_token
-    context.expiresOn = new Date(data[0].expires_on)
-    context.response = data[0]
-
+      if (res.redirected) {
+        res.redirect(res.url)
+        if (refreshOnRedirect) { 
+          await context.refreshToken()
+          return
+        } else { 
+          throw Error(`EasyAuthRedirectError: /.auth/me is redirecting the request. During development this may be because you are not already authenticated. Try signing in in ${context.url} in another tab.`)
+        }
+      } 
+      context.isLoadingToken = false
+      console.log('getToken, res ok')
+      const data = await res.json()
+      console.log('getToken data:', data)
+      context.userId = data[0].user_id
+      context.token = data[0].access_token
+      context.expiresOn = new Date(data[0].expires_on)
+      context.response = data[0]
+    } catch (error) {
+      //Typically if this fetch fails is because you have not configured CORS
+      context.isLoadingToken = false
+      console.error('Fetch /.auth/me failed. Check you have configured the CORS in both the App Service and the browser.')
+      return
+    }
   }
 
   /**
@@ -94,6 +103,18 @@ const AuthContext = (url) => {
       context.isLoadingToken = false
       console.log('AuthContext.refresh error: ', error)
     }
+  }
+
+  context.authFetch = async (url, options = {}) => { 
+    options.headers = options.headers || {}
+    //if the token expired => refresh it
+    if (await context.hasTokenExpired()) {
+      console.log('authFetch received if token expired')
+      await context.refreshToken()
+   }
+    //Set the auth bearer
+    options.headers.Authorization = 'Bearer ' + context.token
+    return fetch(url, options)
   }
 
   /**
