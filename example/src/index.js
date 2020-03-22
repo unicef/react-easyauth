@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { EasyAuthProvider } from '@unicef/react-easyauth'
 
+// Easy Auth Imports 
+import { EasyAuthProvider } from '@unicef/react-easyauth'
 import {authContext, apiFetch} from './authConfig.js'
 
+// If you need to access the API outside of the EasyAuthContext 
+// you can use the functions defined in authConfig
+// 
 const path='/test.json'
-//const path='/api/offices'
 apiFetch(path).then(res => {
   console.log('index.apiFetch res:', res)
   console.log('authContext api fetch', authContext)
@@ -23,21 +25,12 @@ apiFetch(path).then(res => {
   console.log(error)
 })
 
-
-/*
+// Enclose the App within the EasyAuthProvider 
 ReactDOM.render(
-  <>
-  </>
-, document.getElementById('root'));
-*/
-
-
-  ReactDOM.render(
   <EasyAuthProvider authContext={authContext}>
     <App />
   </EasyAuthProvider>
-, document.getElementById('root'));
-
+  ,document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
