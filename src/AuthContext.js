@@ -21,9 +21,14 @@ const AuthContext = (url) => {
   const wait = (ms = 50) => new Promise(_ => setTimeout(_, ms));
   
   context.isInitialized = async () => {
+    console.log('isInitialized context:', context)
     while (context.isLoadingToken && context.error === null) {
-      console.log("hasTokenExpired: delay context.isLoadingToken")
+      console.log("isInitialized delay context.isLoadingToken")
       await wait()
+    }
+    if (context.error !== null) {
+      console.log('isInitaalized Throwing error ')
+      throw context.error
     }
   }
 
@@ -52,8 +57,9 @@ const AuthContext = (url) => {
       const res = await fetch(context.url + '/.auth/me')
       console.log('getToken res:', res)
       if (! res.ok) {
+        context.error = Error(res.error)
         context.isLoadingToken = false
-        throw Error(res.error)
+        throw context.error
       }
       if (res.redirected) {
         res.redirect(res.url)
@@ -61,7 +67,8 @@ const AuthContext = (url) => {
           await context.refreshToken()
           return
         } else { 
-          throw Error(`EasyAuthRedirectError: /.auth/me is redirecting the request. During development this may be because you are not already authenticated. Try signing in in ${context.url} in another tab.`)
+          context.error = Error(`EasyAuthRedirectError: /.auth/me is redirecting the request. During development this may be because you are not already authenticated. Try signing in in ${context.url} in another tab.`)
+          throw context.error
         }
       } 
       context.isLoadingToken = false
@@ -74,8 +81,8 @@ const AuthContext = (url) => {
       context.response = data[0]
     } catch (error) {
       //Typically if this fetch fails is because you have not configured CORS
+      context.error = Error ('Fetch /.auth/me failed. \n(1) Check context.url is correct.\n(2) Check you have configured the CORS in both the App Service and in the browser.')
       context.isLoadingToken = false
-      console.error('Fetch /.auth/me failed. Check you have configured the CORS in both the App Service and the browser.')
       return
     }
   }
@@ -100,6 +107,7 @@ const AuthContext = (url) => {
        
       }
     } catch(error) {
+      context.error = error
       context.isLoadingToken = false
       console.log('AuthContext.refresh error: ', error)
     }

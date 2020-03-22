@@ -2,12 +2,15 @@ import React, {useState, useContext} from 'react'
 import { EasyAuthContext, useAuthFetch } from '@unicef/react-easyauth'
 
 function App() {
+
   const [userName, setUserName] = useState('Loading...')
   const [token, setToken] = useState('Loading..')
   const [expiresOn, setExpiresOn] = useState('Loading...')
   const [count, setCount] = useState(0)
+  const [error, setError] = useState(null)
   const authContext = useContext(EasyAuthContext)
   const authFetch = useAuthFetch()
+  
 
   React.useEffect(() => {
     console.log('authContext in APP &&& ', authContext)
@@ -15,17 +18,21 @@ function App() {
         setUserName(authContext.userId)
         setToken(authContext.token)
         setExpiresOn(authContext.expiresOn.toString())
-      })  
+      }).catch(error => {
+        setError(error)
+      })
   },[authContext])
 
   const handleApiClick = () => {
-    authFetch('https://merlos.azurewebsites.net/test.json') 
+    authFetch('https://xxx.azurewebsites.net/test.json') 
       .then(function (res) {
         if (res.ok)
           return res.json()
       })
       .then(result => {
         console.log(result)
+      }).catch(error => {
+        console.log(error.message)
       })
   }
 
@@ -37,14 +44,17 @@ function App() {
         if (res.ok)
           return res.json()
       })
-      .then(json => {
+      .then(data => {
         console.log(json.value.length)
         setCount(json.value.length)
       })
   }
     return (
     <React.Fragment>
-      <h1>Easy Auth example</h1>
+      <h1>Easy Auth Context </h1>
+      { error ? 
+      <pre>{error.message}</pre>
+      : ( 
       <dl>
         <dt>Logged in username</dt> 
         <dd>{userName}</dd>
@@ -53,10 +63,13 @@ function App() {
         <dt>ExpiresOn</dt> 
         <dd>{expiresOn}</dd>
       </dl>
+      )}
+
       <h2>Inspect console on click</h2>
       <button onClick={() => handleApiClick()}> API call</button>
 
       <button onClick={() => handleGraphApiClick()} >Graph API Call</button>
+
     </React.Fragment>
   )
 }
