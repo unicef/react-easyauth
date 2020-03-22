@@ -6,10 +6,12 @@ function App() {
   const [userName, setUserName] = useState('Loading...')
   const [token, setToken] = useState('Loading..')
   const [expiresOn, setExpiresOn] = useState('Loading...')
-  const [count, setCount] = useState(0)
   const [error, setError] = useState(null)
   const authContext = useContext(EasyAuthContext)
   const authFetch = useAuthFetch()
+
+  const [apiResponse, setApiResponse] = useState('--')
+  const [graphResponse, setGraphResponse] = useState('--')
   
 
   React.useEffect(() => {
@@ -30,24 +32,28 @@ function App() {
           return res.json()
       })
       .then(result => {
-        console.log(result)
+        setApiResponse(JSON.stringify(result))
       }).catch(error => {
-        console.log(error.message)
+        setApiResponse(error.message)
       })
   }
 
   // In order this to work, graph API needs to be setup. See Readme
   //
-  const handleGraphApiClick = () => {
+  const handleGraphClick = () => {
     authFetch('https://graph.microsoft.com/v1.0/me')
       .then(function (res) {
-        if (res.ok)
+        console.log(res)
+        if (res.ok) { 
           return res.json()
+        }
+        throw Error(res.statusText)
       })
       .then(data => {
-        console.log(json.value.length)
-        setCount(json.value.length)
+        console.log(data)
+        setGraphResponse(JSON.stringify(data))
       })
+      .catch(error => setGraphResponse(error.message))
   }
     return (
     <React.Fragment>
@@ -65,10 +71,13 @@ function App() {
       </dl>
       )}
 
-      <h2>Inspect console on click</h2>
-      <button onClick={() => handleApiClick()}> API call</button>
-
-      <button onClick={() => handleGraphApiClick()} >Graph API Call</button>
+      <h2>Fetch Calls</h2>
+      <dl>
+        <dt>API <button onClick={() => handleApiClick()}>Call API</button></dt>
+        <dd><pre>{apiResponse}</pre></dd>
+        <dt>Graph API <button onClick={() => handleGraphClick()} >Call Graph API (/me)</button> </dt>
+        <dd><pre>{graphResponse}</pre></dd>
+      </dl>
 
     </React.Fragment>
   )
