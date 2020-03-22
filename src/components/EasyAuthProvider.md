@@ -6,7 +6,7 @@ import React from 'react'
 import {EasyAuthProvider} from '@unicef/react-easyauth'
 
 ReactDOM.render(
-<EasyAuthProvider url = 'appurl' graphUrl = 'graphUrl'>
-<App />
+<EasyAuthProvider authContext={authContext}>
+   <App />
 </EasyAuthProvider>
 , document.getElementById('root'));

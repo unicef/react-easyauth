@@ -1,30 +1,25 @@
-import React from 'react'
-import { EasyAuthContext, graphApiFetch, apiFetch } from '@unicef/react-easyauth'
+import React, {useState, useContext} from 'react'
+import { EasyAuthContext, useAuthFetch } from '@unicef/react-easyauth'
 
 function App() {
-  const [userName, setUserName] = React.useState(null)
-  const [token, setToken] = React.useState(null)
-  const [count, setCount] = React.useState(0)
-  const authContext = React.useContext(EasyAuthContext)
-  React.useEffect(() => {
-    if (authContext && authContext.userData.name !== '') {
-      setUserName(authContext.userData.name)
-      setToken(authContext.userData.token)
-    }
-  },[authContext, userName])
+  const [userName, setUserName] = useState('Loading...')
+  const [token, setToken] = useState('Loading..')
+  const [expiresOn, setExpiresOn] = useState('Loading...')
+  const [count, setCount] = useState(0)
+  const authContext = useContext(EasyAuthContext)
+  const authFetch = useAuthFetch()
 
-  const clickHandle = () => {
-    graphApiFetch(authContext, '/v1.0/users')
-      .then(function (res) {
-        if (res.ok)
-          return res.json()
-      })
-      .then(json => {
-        console.log(json.value.length)
-        setCount(json.value.length)
-      })
-      
-    apiFetch(authContext, '/api/api/offices')
+  React.useEffect(() => {
+    console.log('authContext in APP &&& ', authContext)
+    authContext.isInitialized().then( () => {  
+        setUserName(authContext.userId)
+        setToken(authContext.token)
+        setExpiresOn(authContext.expiresOn.toString())
+      })  
+  },[authContext])
+
+  const handleApiClick = () => {
+    authFetch('https://merlos.azurewebsites.net/test.json') 
       .then(function (res) {
         if (res.ok)
           return res.json()
@@ -33,13 +28,35 @@ function App() {
         console.log(result)
       })
   }
+
+  // In order this to work, graph API needs to be setup. See Readme
+  //
+  const handleGraphApiClick = () => {
+    authFetch('https://graph.microsoft.com/v1.0/me')
+      .then(function (res) {
+        if (res.ok)
+          return res.json()
+      })
+      .then(json => {
+        console.log(json.value.length)
+        setCount(json.value.length)
+      })
+  }
     return (
     <React.Fragment>
-      <h1>This is Test</h1>
-      <span>Login User name : </span> <h1>{userName}</h1>
-      <span>Token : </span> <h1>{token}</h1>
-      <button onClick={clickHandle} >Click Me</button>
-      <span>Total users : </span> <h1>{count}</h1>
+      <h1>Easy Auth example</h1>
+      <dl>
+        <dt>Logged in username</dt> 
+        <dd>{userName}</dd>
+        <dt>Token</dt> 
+        <dd>{token}</dd>
+        <dt>ExpiresOn</dt> 
+        <dd>{expiresOn}</dd>
+      </dl>
+      <h2>Inspect console on click</h2>
+      <button onClick={() => handleApiClick()}> API call</button>
+
+      <button onClick={() => handleGraphApiClick()} >Graph API Call</button>
     </React.Fragment>
   )
 }
