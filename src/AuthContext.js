@@ -62,7 +62,6 @@ const AuthContext = (url) => {
         throw context.error
       }
       if (res.redirected) {
-        res.redirect(res.url)
         if (refreshOnRedirect) { 
           await context.refreshToken()
           return
