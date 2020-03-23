@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react'
-import { EasyAuthContext, useAuthFetch } from '@unicef/react-easyauth'
+import { EasyAuthContext, useAuthFetch, useAuthContext } from '@unicef/react-easyauth'
 
 function App() {
 
@@ -7,7 +7,7 @@ function App() {
   const [token, setToken] = useState('Loading..')
   const [expiresOn, setExpiresOn] = useState('Loading...')
   const [error, setError] = useState(null)
-  const authContext = useContext(EasyAuthContext)
+  const authContext = useAuthContext()
   const authFetch = useAuthFetch()
 
   const [apiResponse, setApiResponse] = useState('--')
