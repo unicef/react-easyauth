@@ -15,7 +15,6 @@ function App() {
   
 
   React.useEffect(() => {
-    console.log('authContext in APP &&& ', authContext)
     authContext.isInitialized().then( () => {  
         setUserName(authContext.userId)
         setToken(authContext.token)
@@ -79,6 +78,7 @@ function App() {
         <dd><pre>{graphResponse}</pre></dd>
       </dl>
 
+      <button onClick={() => authContext.logout()}>Logout</button>
     </React.Fragment>
   )
 }
