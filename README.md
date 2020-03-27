@@ -1,12 +1,19 @@
 # React EasyAuth [![npm](https://img.shields.io/npm/v/@unicef/react-easyauth.svg?style=flat-square)](https://www.npmjs.com/package/@unicef/react-easyauth)
 
 
-React Easy Auth is a [react](https://reactjs.org/) component wrapper that provides [Microsoft EasyAuth single sign-on experience](https://docs.microsoft.com/en-us/azure/app-service/overview-authentication-authorization) to a React application. 
+React Easy Auth is a [react](https://reactjs.org/) simple solution for managing [Microsoft Azure AppService authentication](https://docs.microsoft.com/en-us/azure/app-service/overview-authentication-authorization). 
+
+The library is pretty useful for React apps hosted in [Microsoft Azure App Services](https://azure.microsoft.com/en-us/services/app-service/) in which you only need to access the API of the same App Service. 
 
 Main features:
- * Enable Microsoft single sign-on using easy auth for Microsoft accounts.
- * `apiFetch` function handles getting and refreshing the token when required.
- * `graphApiFetch` helps to call graph/third party api
+ *  Much more simple to use than [Microsoft MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/README.md)
+ * `useAuthFetch` hook for fetching data. It automatically refreshes the tokens
+ * Can be used together with GraphAPI or other third party APIs 
+
+ Limitations:
+  - It only handles `aad` as authentication provider. But PR are welcome to support other providers :)
+  - Microsoft only supports to have one single third party resource at a time (such as Graph API)
+
 
 ## Install
 
@@ -14,56 +21,88 @@ Main features:
  npm install @unicef/react-easyauth --save
 ```
 
-## Usage
+## Basic Usage
 
 ```jsx static
 // index.js
-import { EasyAuthProvider } from "@unicef/react-easyauth"
+import { EasyAuthProvider, AuthContext } from '@unicef/react-easyauth'
 
+const authContext = AuthContext('http://yourappservice.azurewesites.net')
+
+// Enclose the App within the EasyAuthProvider 
 ReactDOM.render(
-  <EasyAuthProvider url="appurl" graphUrl="graphUrl">
+  <EasyAuthProvider authContext={authContext}>
     <App />
-  </EasyAuthProvider>,
-  document.getElementById("root")
-)
+  </EasyAuthProvider>
+  ,document.getElementById('root'));
 
-// app.js or jsx
+```
 
-import React from "react"
-import { EasyAuthContext, apiFetch, graphApiFetch } from "@unicef/react-easyauth"
+Then in your Components you can call an authenticated fetch
 
-export default function MyComponent() {
-  //initlialize the context
-  const authContext = React.useContext(EasyAuthContext)
-  //call the graph api
-  graphApiFetch(authContext, "/v1.0/users")
-    .then(function(res) {
-      if (res.ok) return res.json()
-    })
-    .then(json => {
-      console.log(json.value.length)
-      setCount(json.value.length)
-    })
-  //call the application api
-  apiFetch(authContext, url)
-    .then(function(res) {
-      if (res.ok) return res.json()
-    })
-    .then(json => {
-      console.log(json.value.length)
-      setCount(json.value.length)
-    })
-  return <React.Fragment></React.Fragment>
+```jsx static
+// Component.js
+import { useAuthFetch } from '@unicef/react-easyauth'
+
+function Component {  
+  const authFetch = useAuthFetch()
+
+  const handleApiClick = () => {
+    authFetch('https://xxx.azurewebsites.net/test.json') 
+      .then(function (res) {
+        if (res.ok)
+          return res.json()
+      })
+      .then(result => {
+        console.log(result)
+      })
+      .catch(error => {
+        console.log(error.message)
+      })
+  }
+
+  return (
+    <button onClick={() => handleApiClick()}>Call API</button>
+  )
 }
 ```
 
-An example is available in the example folder
+A working React App example is available in the example folder. 
+
+
+# Advanced usage
+
+You may need to access the authentication outside of your components, for example from your Redux middleware. Then this
+this version is recommended:
+
+```jsx static
+//authConfig.js
+import {AuthContext} from '@unicef/react-easyauth'
+
+const config = {
+  apiUrl: 'https://xxx.azurewebsites.net',  // <--- set your App Service URL
+  graphUrl: 'https://graph.microsoft.com'
+}
+
+export const authContext = AuthContext(config.apiUrl)
+
+//Defines a apiFetch
+export const apiFetch = (path, options = {}) => {
+  return authContext.authFetch(config.apiUrl + path, options)
+}
+
+export const graphFetch = (path, options = {}) => {
+  return authContext.authFetch(config.graphUrl + path, options)
+}
+
+```
+
 
 ## Localhost restrictions
 
-Although EasyAuth simplifies handling the auth token, it does not fully simplify the localhost development :( due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues.
+Although App Service Authentication simplifies handling the auth token, it does not fully simplify localhost development :( due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues.
 
-A workaround is to tell your browser to skip CORS.
+A workaround is to ask your browser to skip CORS.
 
 ### Google Chrome Windows
 
@@ -77,7 +116,9 @@ A workaround is to tell your browser to skip CORS.
 
 Note that creating a shortcut with that command in the target field may be pretty convenient.
 
-### Google on OSX 
+### Google Chrome on OSX
+
+For OSX:
 
 ```bash
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp
@@ -90,28 +131,36 @@ Optionally you can create an alias in your `~/bash_profile`:
 echo Adding alias chromecors
 alias chromecors='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp'
 ```
-After that whenever you open a terminal you will see Adding alias chromecors and you can run
+
+After that whenever you open a terminal you will see Adding alias `chromecors`. Run that command to open Chrome in CORS free mode.
 
 ```bash
 chromecors
 ```
 
-### Firefox
-It is only required to install [CORS Everywhere plugin](https://addons.mozilla.org/en-US/firefox/addon/cors-everywhere/)
+### Google Chrome GNU/Linux
+
+Find the path of chrome for your distribution
+
+```bash
+/path/to/chrome --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp
+```
+
+You may also want to create an alias. See the OSX trick above.
 
 
-# Enable third party APIs / Graph API with Easy Auth
+# Enable third party APIs / Graph API
 Initially, you can add third party APIs to your EasyAuth token so you don't need handle that yourself. However you need to do some changes in your App Service configuration:
 
 In `https://portal.azure.com` 
 
 1. In Azure AD Services / App Registrations, locate the application.
-2. In API Permissions / options, add MS Graph `User.Read.All`.
+2. In API Permissions / options, add MS Graph `User.Read.All` or whatever [permission your app needs](https://docs.microsoft.com/en-us/graph/permissions-reference)
 3. Check the box Admin consent.
 
 In `https://resources.azure.com`
 
-1. On the left browser click on subscriptions -> Subcription name -> resourceGroups -> resourceGroupName -> providers -> Microsoft.Web -> sites -> <Appname> -> config -> authsettings -> Edit
+1. On the left browser click on subscriptions -> Subcription name -> resourceGroups -> resourceGroupName -> providers -> Microsoft.Web -> sites -> `<AppName>` -> config -> authsettings -> Edit
 
 2. Update property `additionalLoginParams`. Replace
    
@@ -145,13 +194,13 @@ The following commands are available:
 
 ### `npm start`
 
-Builds the component outputing it in the `dist` folder. It is refreshed everytime you make changes in the code.
+Builds the component in `dist/` folder and keeps it running in watch mode.
 
 ```bash
 npm start
 ```
 
-To see the output in the browser run the example app ([/example](https://github.com/unicef/material-ui-currency-textfield/tree/master/example))
+To see the output in a browser run the example app ([/example](https://github.com/unicef/material-ui-currency-textfield/tree/master/example))
 
 ```bash
  cd example 
@@ -179,9 +228,9 @@ We use [styleguidelist](https://react-styleguidist.js.org/) for documenting our 
 ### `npm run styleguide:build`
 Builds the styleguide documentation for production. The output targets the `styleguide` folder.
 
-## License
+## MIT License
 
-Copyright (c) 2019 UNICEF.org
+Copyright (c) 2020 UNICEF.org
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
